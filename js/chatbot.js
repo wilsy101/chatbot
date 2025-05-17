@@ -1,206 +1,82 @@
-// function loadCSS(url) {
-//     const link = document.createElement('link');
-//     link.rel = 'stylesheet';
-//     link.href = url;
-//     document.head.appendChild(link);
-//   }
-  
-//   // Example usage:
-// loadCSS('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
-// const head = document.querySelector('head');
+// Storage key
+        const SESSION_ID_KEY = 'myAppSessionId';
 
-// // Create style element
-// const style = document.createElement('style');
+        /**
+         * Generates a new unique session ID using the Crypto API.
+         * @returns {string} A UUID.
+         */
+        function generateSessionId() {
+            // crypto.randomUUID() is a modern, secure way to generate UUIDs
+            // It's available in secure contexts (HTTPS) and most modern browsers.
+            if (window.crypto && window.crypto.randomUUID) {
+                return window.crypto.randomUUID();
+            } else {
+                // Fallback for older browsers or non-secure contexts (though less ideal)
+                console.warn('crypto.randomUUID() not available. Using a less robust fallback.');
+                return 'fallback-' + Date.now().toString(36) + Math.random().toString(36).substring(2);
+            }
+        }
 
-// // Add styles
-// style.textContent = `
-//     #chat-icon {
-//         position: fixed;
-//         bottom: 20px;
-//         right: 20px;
-//         background-color: #007bff;
-//         color: white;
-//         border-radius: 50%;
-//         width: 60px;
-//         height: 60px;
-//         display: flex;
-//         justify-content: center;
-//         align-items: center;
-//         cursor: pointer;
-//         z-index: 1001;
-//         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-//     }
-//     #chat-icon:hover {
-//         background-color: #0056b3;
-//     }
-//     #chatbox {
-//         border: 1px solid #ccc;
-//         height: 300px;
-//         overflow-y: scroll;
-//         padding: 10px;
-//         margin-bottom: 70px;
-//         background-color: #f9f9f9;
-//         border-radius: 10px;
-//         position: fixed;
-//         bottom: 80px;
-//         right: 20px;
-//         width: 300px;
-//         z-index: 1000;
-//         display: none;
-//         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-//     }
-//     #input-container {
-//         display: flex;
-//         position: fixed;
-//         bottom: 20px;
-//         right: 20px;
-//         width: 300px;
-//     }
-//     #message-input {
-//         flex: 1;
-//         padding: 8px;
-//         border: 1px solid #ccc;
-//         border-radius: 5px 0 0 5px;
-//         margin-bottom: 0;
-//         box-sizing: border-box;
-//     }
-//     #send-button {
-//         padding: 8px 16px;
-//         background-color: #007bff;
-//         color: white;
-//         border: none;
-//         border-radius: 0 5px 5px 0;
-//         cursor: pointer;
-//     }
-//     #send-button:hover {
-//         background-color: #0056b3;
-//     }
-//     .message {
-//         margin-bottom: 5px;
-//         padding: 8px;
-//         border-radius: 5px;
-//         background-color: #e2e2e2;
-//     }
-//     .sender {
-//         font-weight: bold;
-//         color: #007bff;
-//         display: block;
-//     }
-//     #minimize-button {
-//         position: absolute;
-//         top: 5px;
-//         right: 5px;
-//         background-color: transparent;
-//         border: none;
-//         font-size: 16px;
-//         cursor: pointer;
-//         color: #666;
-//     }
-//     #minimize-button:hover {
-//         color: #333;
-//     }
-// `;
+        /**
+         * Stores the session ID in sessionStorage.
+         * @param {string} id - The session ID to store.
+         */
+        function storeSessionId(id) {
+            try {
+                sessionStorage.setItem(SESSION_ID_KEY, id);
+                console.log('Session ID stored:', id);
+            } catch (e) {
+                console.error('Failed to store session ID in sessionStorage:', e);
+                sessionIdDisplay.textContent = 'Error storing ID.';
+            }
+        }
 
-// // Append style to head
-// head.appendChild(style);
+        /**
+         * Retrieves the session ID from sessionStorage.
+         * @returns {string|null} The stored session ID, or null if not found.
+         */
+        function getSessionId() {
+            try {
+                return sessionStorage.getItem(SESSION_ID_KEY);
+            } catch (e) {
+                console.error('Failed to retrieve session ID from sessionStorage:', e);
+                sessionIdDisplay.textContent = 'Error retrieving ID.';
+                return null;
+            }
+        }
 
-
-// const body = document.querySelector('body');
-
-// // Create chat icon
-// const chatIcon = document.createElement('div');
-// chatIcon.id = 'chat-icon';
-// chatIcon.innerHTML = '<i class="fas fa-comment-dots"></i>';
-// body.appendChild(chatIcon);
-
-// // Create chatbox
-// const chatbox = document.createElement('div');
-// chatbox.id = 'chatbox';
-
-// // Create minimize button
-// const minimizeButton = document.createElement('button');
-// minimizeButton.id = 'minimize-button';
-// minimizeButton.innerHTML = '<i class="fas fa-window-minimize"></i>';
-// chatbox.appendChild(minimizeButton);
-// body.appendChild(chatbox);
-
-// // Create input container
-// const inputContainer = document.createElement('div');
-// inputContainer.id = 'input-container';
-
-// // Create message input
-// const messageInput = document.createElement('input');
-// messageInput.id = 'message-input';
-// messageInput.placeholder = 'Type your message...';
-// inputContainer.appendChild(messageInput);
-
-// // Create send button
-// const sendButton = document.createElement('button');
-// sendButton.id = 'send-button';
-// sendButton.textContent = 'Send';
-// inputContainer.appendChild(sendButton);
-// body.appendChild(inputContainer);
-
-
-
-// chatIcon.addEventListener('click', () => {
-//     chatbox.style.display = 'block';
-//     inputContainer.style.display = 'flex';
-//     chatIcon.style.display = 'none';
-// });
-
-// minimizeButton.addEventListener('click', () => {
-//     chatbox.style.display = 'none';
-//     inputContainer.style.display = 'none';
-//     chatIcon.style.display = 'flex';
-// });
-
-
-// sendButton.addEventListener('click', () => {
-//     const messageText = messageInput.value;
-//     if (messageText.trim() !== '') {
-//         addUserMessage(messageText);
-//         messageInput.value = '';
-//         chatbox.scrollTop = chatbox.scrollHeight;
-
-//         setTimeout(() => {
-//             addBotMessage("This is a simulated response from the bot.");
-//             chatbox.scrollTop = chatbox.scrollHeight;
-//         }, 1000);
-//     }
-// });
-
-// messageInput.addEventListener('keypress', (event) => {
-//     if (event.key === 'Enter') {
-//         sendButton.click();
-//     }
-// });
-
-// function addUserMessage(text) {
-//     const messageElement = document.createElement('div');
-//     messageElement.classList.add('message');
-//     messageElement.classList.add('user-message');
-//     messageElement.innerHTML = `<span class="sender">${text} <i class="fas fa-person"></i></span>`;
-//     chatbox.appendChild(messageElement);
-//     messageElement.style.setProperty('textAlign', 'right');
-//     messageElement.style.setProperty('backgroundColor', '#d4edda');
-//     messageElement.style.setProperty('color', '#155724');
-// }
-
-// function addBotMessage(text) {
-//     const messageElement = document.createElement('div');
-//     messageElement.classList.add('message');
-//     messageElement.classList.add('bot-message');
-//     messageElement.innerHTML = `<span class="sender"><i class="fas fa-robot"></i>  ${text}</span>`;
-//     chatbox.appendChild(messageElement);
-//     messageElement.style.setProperty('textAlign', 'left');
-//     messageElement.style.setProperty('backgroundColor', '#cce5ff');
-//     messageElement.style.setProperty('color', '#004085');
-// }
+        /**
+         * Clears the session ID from sessionStorage.
+         */
+        function clearSessionId() {
+            try {
+                sessionStorage.removeItem(SESSION_ID_KEY);
+                console.log('Session ID cleared.');
+            } catch (e) {
+                console.error('Failed to clear session ID from sessionStorage:', e);
+                sessionIdDisplay.textContent = 'Error clearing ID.';
+            }
+        }
+        /**
+         * Handles the generation or retrieval of a session ID.
+         */
+        function initializeSession() {
+            let sessionId = getSessionId();
+            if (!sessionId) {
+                console.log('No existing session ID found. Generating a new one.');
+                sessionId = generateSessionId();
+                storeSessionId(sessionId);
+            } else {
+                console.log('Existing session ID found:', sessionId);
+            }
+        }
 
 // chat.js - Floating Chat Interface
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // Initialize session ID
+    initializeSession()
     // Create and append CSS
     const style = document.createElement('style');
     style.textContent = `
@@ -451,12 +327,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const input = chatInput.querySelector('input');
     input.addEventListener('keypress', function(e) {
+        
         if (e.key === 'Enter' && input.value.trim() !== '') {
+            console.log("what is");
+            
             // Add user message
             addMessage(input.value, 'user');
             
             // Call API for response (simulated)
-            fetchBotResponse().then(response => {
+            
+            fetchBotResponse(apiUrl="http://localhost:8000/api/", data={'session_id':getSessionId(), 'text':input.value}).then(response => {
+                console.log("ss ", response);
                 addMessage(response, 'bot');
             });
             
@@ -467,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to add a message to the chat
     function addMessage(text, sender) {
+        console.log("Adding text:", text);
         const message = document.createElement('div');
         message.className = `message ${sender}-message`;
         
@@ -499,12 +381,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Simulated API function
-    async function fetchBotResponse() {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 600));
-        return "Dummy text here";
+    async function fetchBotResponse(apiUrl, payload) {
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    // Add initial bot message
-    addMessage("Hi there! How can I help you today?", 'bot');
+
+    const data = await response.json(); // Expecting JSON with key "text"
+    return data.text; // Return the value of "text"
+  } catch (error) {
+    console.error('Error fetching bot response:', error);
+    return null;
+  }
+}
+addMessage("Hi, how can I help you today?", sender="bot")
+
 });
