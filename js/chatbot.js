@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Call API for response (simulated)
             
             fetchBotResponse(apiUrl="https://django-service-test-514452716404.asia-south1.run.app/api/", data={'session_id':getSessionId(), 'text':input.value}).then(response => {
-                apiUrl="http://localhost:8000/api/"
+                // apiUrl="http://localhost:8000/api/"
                 console.log("ss ", response);
                 addMessage(response, 'bot');
             });
