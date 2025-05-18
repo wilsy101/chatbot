@@ -74,7 +74,6 @@
 
 // chat.js - Floating Chat Interface
 document.addEventListener('DOMContentLoaded', function() {
-    
     // Initialize session ID
     initializeSession()
     // Create and append CSS
@@ -117,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             bottom: 80px;
             right: 0;
             width: 350px;
-            height: 450px;
+            height: 550px;
             background-color: #fff;
             border-radius: 10px;
             overflow: hidden;
@@ -167,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         .chat-messages {
             flex: 1;
+            font-size: smaller;
             padding: 15px;
             overflow-y: auto;
             background-color: #f5f5f5;
@@ -316,8 +316,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Event listeners for chat functionality
     chatIcon.addEventListener('click', function() {
+        if (chatBox.classList.contains('active')){
+            chatBox.classList.remove('active');    
+        }
+        else {
         chatBox.classList.add('active');
         chatIcon.classList.remove('pulse');
+        }
     });
     
     const minimizeBtn = chatHeader.querySelector('.minimize-btn');
